@@ -4,7 +4,6 @@ import streamlit as st
 from groq import Groq
 from PIL import Image
 import requests
-import dotenv
 
 def encode_image(image):
     buffered = io.BytesIO()
@@ -12,7 +11,7 @@ def encode_image(image):
     return base64.b64encode(buffered.getvalue()).decode('utf-8')
 
 def analyze_image(image, prompt, is_url=False):
-    client = Groq(api_key=dotenv.get_key('.env', 'GROQ_API_KEY'))
+    client = Groq(api_key=st.secrets['GROQ_API_KEY'])
 
     if is_url:
         image_content = {"type": "image_url", "image_url": {"url": image}}
@@ -38,7 +37,7 @@ def analyze_image(image, prompt, is_url=False):
         return f"Error: {str(e)}"
 
 def check_content_safety(image_description):
-    client = Groq(api_key=dotenv.get_key('.env', 'GROQ_API_KEY'))
+    client = Groq(api_key=st.secrets['GROQ_API_KEY'])
 
     try:
         chat_completion = client.chat.completions.create(
